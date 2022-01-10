@@ -86,7 +86,8 @@
                 "amount": 54.67
             }
         ],
-        "balance": 325,
-        "available": 12125
+        "balance": 25,
+        "available": 12125,
+        "avaliable": null
     }
 }
