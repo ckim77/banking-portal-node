@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const { accounts, users, writeJSON } = require('./data.js');
+const servicesRoutes = require('./routes/services.js');
+const accountRoutes = require('./routes/accounts.js');
 
 const app = new express();
 
@@ -16,45 +18,13 @@ app.get('/', (req,res) => {
     res.render('index', { title: 'Account Summary', accounts: accounts})
 });
 
-app.get('/savings', (req,res) => {
-    res.render('account', { account: accounts.savings })
-});
-
-app.get('/checking', (req,res) => {
-    res.render('account', { account: accounts.checking })
-});
-
-app.get('/credit', (req,res) => {
-    res.render('account', { account: accounts.credit })
-});
-
 app.get('/profile', (req,res) => {
     res.render('profile', { user: users[0] })
 });
 
-// transfer requests
-app.get('/transfer', (req,res) => {
-    res.render('transfer')
-});
+app.use('/account', accountRoutes);
+app.use('/services', servicesRoutes);
 
-app.post('/transfer', (req,res) => {
-    accounts[req.body.from].balance -= req.body.amount;
-    accounts[req.body.to].balance += parseInt(req.body.amount, 10);
-    writeJSON();
-    res.render('transfer', { message: 'Transfer Completed'});
-});
-
-// payment reqests
-app.get('/payment', (req,res) => {
-    res.render('payment', { account: accounts.credit })
-});
-
-app.post('/payment', (req,res) => {
-    accounts.credit.balance -= req.body.amount;
-    accounts.credit.available += parseInt(req.body.amount);
-    writeJSON();
-    res.render('payment', { message: "Payment Successful", account: accounts.credit });
-});
 
 
 app.listen(3000, () => {
